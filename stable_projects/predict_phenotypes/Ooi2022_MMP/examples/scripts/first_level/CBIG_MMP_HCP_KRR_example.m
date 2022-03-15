@@ -1,6 +1,33 @@
-function CBIG_MMP_HCP_KRR_example(outerFolds, innerFolds, feature_path, featurebase, ...
-    split, outdir, subtxt, scorecsv, restrictedcsv, predvar, covtxt, ymat, covmat)
+% function CBIG_MMP_HCP_KRR_example()
 
+% # 1. feature_path: path to feature mat file
+% # 2. outdir: output directory
+% # 3. outerFolds: number of outer folds
+% # 4. innerFold: number of inner folds
+% # 5. subtxt: list of subjects
+% # 6. scorecsv: table of behaviour scores and gender
+% # 7. restrictedcsv: table of family ID and age
+% # 8. predvar: txt file of names of behaviours to predict from subcsv
+% # 9. covtxt: txt file of names of covariates to regress from y variables
+% # 10. ymat: output name of behaviours to be predicted
+% # 11. covmat: output name of covariates to control for
+% # 12. split_idx: current split
+outerFolds = 10;
+innerFolds = 10;
+feature_path = 'D:\Data\2022\Mar\KRR_data\features_rs';
+featurebase = 'KRR';
+split = 1;
+outdir = 'D:\Data\2022\Mar\KRR_results';
+subtxt = 'D:\Data\2022\Mar\fc-re\HCP_922.txt';
+scorecsv = 'D:\Data\2022\Mar\KRR_data\scores.csv';
+restrictedcsv = 'D:\Data\2022\Mar\fc-re\HCP_restricted.csv';
+predvar = 'D:\Data\2022\Mar\KRR_data\prediction_variables.txt';
+covtxt = 'output_cov.mat';
+ymat = 'output_y.mat';
+covmat = 'covariates.txt';
+
+addpath(genpath('D:\Data\2022\Mar\Standalone_Ooi2022_MMP-main\Standalone_Ooi2022_MMP-main\utilities\matlab\predictive_models\utilities'));
+addpath(genpath('D:\Data\2022\Mar\Standalone_Ooi2022_MMP-main\Standalone_Ooi2022_MMP-main\utilities\matlab\utilities'));
 % function CBIG_MMP_HCP_KRR(outerFolds, innerFolds, feature_path, featurebase, ...
 %    split, outdir, subtxt, scorecsv, restrictedcsv, predvar, covtxt, ymat, covmat)
 % 
@@ -70,7 +97,7 @@ param.num_inner_folds = innerFolds;
 outstem = convertStringsToChars(strcat("KRR_", featurebase)); 
 feature_name = featurebase;
 param.outstem = outstem;
-param.outdir = fullfile(outdir, outstem, seed_name, 'results')
+param.outdir = fullfile(outdir, outstem, seed_name, 'results');
 % subject details
 sub_txt = subtxt;
 score_csv = {scorecsv}; 
@@ -118,8 +145,10 @@ if ~exist(fullfile(outdir, y_mat))
     % generate y
     score_types = cell(1,num_scores); % define score types
     score_types(:) = {'continuous'};
-    y = CBIG_read_y_from_csv(score_csv, 'Subject', score_names, score_types,...
-        sub_txt, fullfile(outdir, y_mat), ',');
+    % output： An #subjects x #TargetVariables matrix with all the target variables
+%     y = CBIG_read_y_from_csv(score_csv, 'Subject', score_names, score_types,...
+%         sub_txt, fullfile(outdir, y_mat), ',');
+    y = load('D:\Data\2022\Mar\scores.txt');
 else
     fprintf('Using existing y file \n')
     y_temp = load(fullfile(outdir,y_mat));
@@ -130,29 +159,34 @@ param.y = y;
 %% generate covariate matrix
 fprintf('[3] Generate covariate matrix... \n')
 
-if ~exist(fullfile(outdir,cov_mat))
-    % generate covariates
-    fid = fopen(cov_txt,'r'); % covariate names text file
-    cov_list = textscan(fid,'%s');
-    cov_names = cov_list{1};
-    fclose(fid);
-    num_cov = size(cov_names,1);
-    cov_types = {'categorical'}; % define covariate types
-    cov = CBIG_generate_covariates_from_csv(score_csv, 'Subject', cov_names, cov_types, ...
-         sub_txt, 'none', 'none', fullfile(outdir,cov_mat), ',');
-else
-    fprintf('Using existing covariate file \n')
-    cov_temp = load(fullfile(outdir, cov_mat));
-    cov = cov_temp.covariates;
-end
+% if ~exist(fullfile(outdir,cov_mat))
+%     % generate covariates
+%     fid = fopen(cov_txt,'r'); % covariate names text file
+%     cov_list = textscan(fid,'%s');
+%     cov_names = cov_list{1};
+%     fclose(fid);
+%     num_cov = size(cov_names,1);
+%     cov_types = {'categorical'}; % define covariate types
+%     cov = CBIG_generate_covariates_from_csv(score_csv, 'Subject', cov_names, cov_types, ...
+%          sub_txt, 'none', 'none', fullfile(outdir,cov_mat), ',');
+% else
+%     fprintf('Using existing covariate file \n')
+%     cov_temp = load(fullfile(outdir, cov_mat));
+%     cov = cov_temp.covariates;
+% end
+cov = load('D:\Data\2022\Mar\output_cov.mat');
 param.covariates = cov;
 
 %% generate features
 fprintf('[4] Loading features... \n')
 % load features
 features = load(strcat(feature_path ,'.mat'));
-param.feature_mat = features.(feature_name);
+% param.feature_mat = features.(feature_name);
+param.feature_mat = features.features_rs;
 
 %% KRR workflow
 fprintf('[5] Run KRR workflow...\n')
+addpath(genpath('D:\Data\2022\Mar\Standalone_Ooi2022_MMP-main\Standalone_Ooi2022_MMP-main\utilities\matlab\predictive_models\KernelRidgeRegression'));
+addpath(genpath('D:\Data\2022\Mar\Standalone_Ooi2022_MMP-main\Standalone_Ooi2022_MMP-main\utilities\matlab\stats'));
+addpath(genpath('D:\Data\2022\Mar\Standalone_Ooi2022_MMP-main\Standalone_Ooi2022_MMP-main\utilities\matlab'));
 CBIG_KRR_workflow(param);

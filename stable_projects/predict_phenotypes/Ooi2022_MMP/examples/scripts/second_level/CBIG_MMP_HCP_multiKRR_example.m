@@ -1,7 +1,28 @@
-function CBIG_MMP_HCP_multiKRR_example(outerFolds, innerFolds, feature_dir, feature_mats_cell, ...
-    kernel_groups, outstem_name, split_idx, outdir, subtxt, scorecsv, restrictedcsv, ...
-    predvar, covtxt, ymat, covmat, fold_idx)
+function CBIG_MMP_HCP_multiKRR_example( feature_dir, outstem_name)
 
+outerFolds = 10;
+innerFolds = 10;
+feature_path = 'D:\Data\2022\Mar\features_rs';
+featurebase = 'KRR';
+split_idx = 1;
+fold_idx = 1;
+outdir = './';
+subtxt = 'D:\Data\2022\Mar\fc-re\HCP_922.txt';
+scorecsv = 'D:\Data\2022\Mar\scores.csv';
+restrictedcsv = 'D:\Data\2022\Mar\fc-re\HCP_restricted.csv';
+predvar = 'D:\Data\2022\Mar\prediction_variables.txt';
+covtxt = 'output_cov.mat';
+ymat = 'output_y.mat';
+covmat = 'covariates.txt';
+kernal_groups = "1,2";
+feature_mats_cell = "features_rs,features_wm";
+
+addpath(genpath('D:\Data\2022\Mar\Standalone_Ooi2022_MMP-main\Standalone_Ooi2022_MMP-main\utilities\matlab\predictive_models\utilities'));
+addpath(genpath('D:\Data\2022\Mar\Standalone_Ooi2022_MMP-main\Standalone_Ooi2022_MMP-main\utilities\matlab\utilities'));
+
+% function CBIG_MMP_HCP_multiKRR_example(outerFolds, innerFolds, feature_dir, feature_mats_cell, ...
+%     kernel_groups, outstem_name, split_idx, outdir, subtxt, scorecsv, restrictedcsv, ...
+%     predvar, covtxt, ymat, covmat, fold_idx)
 % function CBIG_MMP_HCP_multiKRR(outerFolds, innerFolds, feature_dir, feature_mats_cell, ...
 %    kernel_groups, outstem_name, split_idx, outdir, subtxt, subcsv, predvar, ...
 %    covtxt, ymat, covmat, fold_idx)

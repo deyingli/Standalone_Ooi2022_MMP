@@ -106,11 +106,10 @@ if ~contains(reg,'models')
         end
         
         score_fold_task = zeros(N_score,N_seed,N_task);
-        score_fold_task(1,:,:) = squeeze(mean(acc_score_fold_task(:),1));
-        %score_fold_task(1,:,:) = squeeze(mean(acc_score_fold_task(varimax_cog,:,:),1));
-        %score_fold_task(2,:,:) = squeeze(mean(acc_score_fold_task(varimax_dis,:,:),1));
-        %score_fold_task(3,:,:) = squeeze(mean(acc_score_fold_task(varimax_emo,:,:),1));
-        %score_fold_task(4,:,:) = squeeze(mean(acc_score_fold_task(all_scores,:,:),1));
+        score_fold_task(1,:,:) = squeeze(mean(acc_score_fold_task(varimax_cog,:,:),1));
+        score_fold_task(2,:,:) = squeeze(mean(acc_score_fold_task(varimax_dis,:,:),1));
+        score_fold_task(3,:,:) = squeeze(mean(acc_score_fold_task(varimax_emo,:,:),1));
+        score_fold_task(4,:,:) = squeeze(mean(acc_score_fold_task(all_scores,:,:),1));
 
         % save to struct
         results.(groups{n}) = score_fold_task;

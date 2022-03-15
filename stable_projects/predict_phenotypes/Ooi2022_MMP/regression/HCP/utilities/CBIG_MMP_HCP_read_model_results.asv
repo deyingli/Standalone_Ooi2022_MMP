@@ -48,9 +48,9 @@ switch model
         for seed_num = 1:N_seeds
             seed_name = strcat('seed_', num2str(seed_num)); % 'seed_1'
             tmp = load(fullfile(outdir,outstem,seed_name,'results',strcat('final_result_',outstem,'.mat'))); % 'D:\Data\2022\Mar\KRR_data\KRR_results\KRR_rs\seed_1\results\final_result_KRR_rs.mat'
-            all_results = tmp.optimal_stats.(metric)'; % 58*10
-            seed_alloc = ((seed_num-1)*N_folds + 1) : (seed_num*N_folds); % [1,2,...,10]
-            acc_vec(:,seed_alloc) = all_results(behav_ind,:); % 58*10
+            all_results = tmp.optimal_stats.(metric)';
+            seed_alloc = ((seed_num-1)*N_folds + 1) : (seed_num*N_folds);
+            acc_vec(:,seed_alloc) = all_results(behav_ind,:);
         end
     case 'LRR' % LRR results
         if exist(fullfile(outdir,outstem,strcat(outstem, '_', metric, '_acc_vec.mat'))) && store_new == 0
