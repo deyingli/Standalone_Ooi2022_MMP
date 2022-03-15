@@ -15,7 +15,7 @@ addpath(genpath('D:\Data\2022\Mar\Standalone_Ooi2022_MMP-main\Standalone_Ooi2022
 outerFolds = 10;
 innerFolds = 10;
 feature_path = 'D:\Data\2022\Mar\KRR_data\features_rs'; % mat文件，2278*921
-featurebase = ['rs_' num2str(behid)];
+featurebase = 'rs_';
 split = i;
 outdir = 'D:\Data\2022\Mar\KRR_data\KRR_results';
 subtxt = 'D:\Data\2022\Mar\fc-re\HCP_922.txt'; % 被试list
